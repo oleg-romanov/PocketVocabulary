@@ -56,13 +56,40 @@ class _WordsScreenState extends State<WordsScreen> {
               itemBuilder: (context, index) {
                 final item = snapshot.data?[index];
                 if (item != null) {
-                  return ListTile(
-                    title: Text(item.originalText),
-                    subtitle: Text(item.translatedText),
-                    onTap: () {
-                      // Navigate to detail screen for selected item
-                    },
-                  );
+                  return Dismissible(
+                      key: Key(item.toString()),
+                      onDismissed: (direction) {
+                        _deleteWord(item.id);
+                        setState(() {
+                          snapshot.data!.removeAt(index);
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("$item dismissed")));
+                      },
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerRight,
+                        child: const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          item.originalText.toLowerCase(),
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          item.translatedText.toLowerCase(),
+                          style: const TextStyle(
+                            fontSize: 22,
+                          ),
+                        ),
+                      ));
                 }
               },
             );
