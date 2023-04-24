@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_pocket_vocabulary/DatabaseHelper.dart';
 import 'package:flutter_pocket_vocabulary/model.dart';
+import 'package:flutter_pocket_vocabulary/ScanTextScreen.dart';
 import 'package:translator/translator.dart';
 import 'dart:io';
+// import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
 
 class WordCreateScreen extends StatefulWidget {
   const WordCreateScreen({super.key});
@@ -274,6 +276,16 @@ class _WordCreateScreenState extends State<WordCreateScreen> {
     });
   }
 
+  void scanTextButtonTapped() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ScanTextScreen()),
+    );
+    if (result != null) {
+      _originalTextFieldController.text = result;
+    }
+  }
+
   Widget showPlatformProgressIndicator() {
     if (Platform.isIOS || Platform.isMacOS) {
       return const CupertinoActivityIndicator();
@@ -312,29 +324,41 @@ class _WordCreateScreenState extends State<WordCreateScreen> {
                       const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   child: TextFormField(
                     controller: _originalTextFieldController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Введите слово',
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: GestureDetector(
+                        onTap: scanTextButtonTapped,
+                        child: const Icon(Icons.document_scanner),
+                      ),
                     ),
                   ),
                 ),
-                TextButton(
-                  onPressed: _onTranslateButtonTapped,
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  margin: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: TextButton(
+                    onPressed: _onTranslateButtonTapped,
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
                       ),
+                      padding: const MaterialStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 46.0, vertical: 16.0),
+                      ),
+                      backgroundColor: const MaterialStatePropertyAll<Color>(
+                          Colors.lightGreen),
+                      foregroundColor:
+                          const MaterialStatePropertyAll<Color>(Colors.white),
                     ),
-                    padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 46.0, vertical: 16.0),
+                    child: const Text(
+                      'Перевести',
+                      style: TextStyle(fontSize: 18),
                     ),
-                    backgroundColor:
-                        const MaterialStatePropertyAll<Color>(Colors.blue),
-                    foregroundColor:
-                        const MaterialStatePropertyAll<Color>(Colors.white),
                   ),
-                  child: const Text('Перевести'),
                 ),
                 Container(
                   margin:
@@ -358,23 +382,31 @@ class _WordCreateScreenState extends State<WordCreateScreen> {
                     ),
                   ),
                 ),
-                TextButton(
-                  onPressed: _onAddButtonTapped,
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
+                Container(
+                  width: double.infinity,
+                  height: 60,
+                  margin: const EdgeInsets.symmetric(horizontal: 32.0),
+                  child: TextButton(
+                    onPressed: _onAddButtonTapped,
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
                       ),
+                      padding: const MaterialStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 46.0, vertical: 16.0),
+                      ),
+                      backgroundColor: const MaterialStatePropertyAll<Color>(
+                          Colors.lightGreen),
+                      foregroundColor:
+                          const MaterialStatePropertyAll<Color>(Colors.white),
                     ),
-                    padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 46.0, vertical: 16.0),
+                    child: const Text(
+                      'Добавить',
+                      style: TextStyle(fontSize: 18),
                     ),
-                    backgroundColor:
-                        const MaterialStatePropertyAll<Color>(Colors.blue),
-                    foregroundColor:
-                        const MaterialStatePropertyAll<Color>(Colors.white),
                   ),
-                  child: const Text('Добавить'),
                 ),
               ],
             ),
